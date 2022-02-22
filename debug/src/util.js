@@ -6,6 +6,14 @@
  * @returns {O & P}
  */
 export function assign(obj, props) {
-	for (let i in props) obj[i] = props[i];
+	for (let i in props) {
+		// WKWebView throws TypeError: Attempted to assign to readonly property
+		// when you do ({}).constructor = undefined
+		// (AppleWebKit/605.1.15)
+		if (i !== 'constructor') {
+			// @ts-ignore We change the type of `obj` to be `O & P`
+			obj[i] = props[i];
+		}
+	}
 	return /** @type {O & P} */ (obj);
 }
